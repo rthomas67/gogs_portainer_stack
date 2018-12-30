@@ -1,0 +1,29 @@
+version: '2'
+services:
+  gogs-mariadb:
+    image: 'jsurf/rpi-mariadb:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=gogs_db_999
+    ports:
+      - '13306:3306'
+    volumes:
+      - 'gogs_mariadb_sys:/sys/fs/cgroup'
+      - 'gogs_mariadb_data:/var/lib/mysql'
+  gogs-app:
+    image: 'gogs/gogs-rpi:latest'
+    environment:
+      - GOGS_CUSTOM=/data/gogs
+    ports:
+      - '10080:80'
+      - '13000:3000'
+    volumes:
+      - 'gogs_data:/data'
+    depends_on:
+      - gogs-mariadb
+volumes:
+  gogs_mariadb_sys:
+    driver: local
+  gogs_mariadb_data:
+    driver: local
+  gogs_data:
+    driver: local
